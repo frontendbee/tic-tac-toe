@@ -4,18 +4,24 @@ const o = 'o';
 // in console 
 function gameOn() {
     const board = [];
+    
+
+    // let them be numbers
+    let scoreXDom = document.querySelector('.score-x');
+    let scoreODom = document.querySelector('.score-o');
+    let scoreX = parseInt(scoreXDom.textContent, 10) || 0;
+    let scoreO = parseInt(scoreODom.textContent, 10) || 0;
 
     const winningCombinations = [
-        [0, 1, 2], // Prima riga
-        [3, 4, 5], // Seconda riga
-        [6, 7, 8], // Terza riga
-        [0, 3, 6], // Prima colonna
-        [1, 4, 7], // Seconda colonna
-        [2, 5, 8], // Terza colonna
-        [0, 4, 8], // Diagonale 1
-        [2, 4, 6]  // Diagonale 2
+        [0, 1, 2], 
+        [3, 4, 5], 
+        [6, 7, 8], 
+        [0, 3, 6], 
+        [1, 4, 7], 
+        [2, 5, 8], 
+        [0, 4, 8],
+        [2, 4, 6] 
     ];
-
 
     for (let i = 0; i < 9; i++) {
         board.push(0);
@@ -30,46 +36,60 @@ function gameOn() {
                 console.log('This cell is already taken');
                 alert('This cell is already taken');
                 return;
-            }
-            else if (board[cellNum] === 0) {
+            } else {
                 board[cellNum] = symbol;
-            };
+            }
 
-            // checkWinner();
+            
         },
-        giveResult(){
+        giveResult() {
             console.log(board);
         },
         checkWinner() {
             let winner = null;
 
-            for(let i = 0; i < winningCombinations.length; i++){
+            for (let i = 0; i < winningCombinations.length; i++) {
                 const [a, b, c] = winningCombinations[i];
 
-                if(board[a] !== 0 && board[a] === board[b] && board[a] === board[c]){
+                if (board[a] !== 0 && board[a] === board[b] && board[a] === board[c]) {
                     winner = board[a];
                     break;
                 }
             }
 
-            if(winner){
-                console.log('We have a winner! The symbol ' + winner + ' won!');
-                alert('We have a winner! The symbol ' + winner + ' won!');
+            
+
+            if (winner) {
+                
+                if (winner === 'x') {
+                    scoreX++;
+                } else {
+                    scoreO++;
+                }
+                console.log(winner)
+                
+                scoreXDom.textContent = scoreX;
+                scoreODom.textContent = scoreO;
+                board.fill(0);
+
+                
+
+                confetti(); 
+                resetGame(); 
             } else if (!board.includes(0)) {
                 console.log('The game is a draw');
                 alert('The game is a draw');
+                board.fill(0);
+                resetGame();
             }
-
-
         }
     }
 }
 
+
 // graphic
 const containerDiv = document.querySelectorAll('.container-div')
 let symbolToInsert = 'x';
-// const game = gameOn(); // Inizializza il gioco
-
 
 const game = gameOn();
 
@@ -102,11 +122,19 @@ containerDiv.forEach((div) => {
     })
 })
 
-// containerDiv.forEach((div) => {
-//     div.addEventListener('click', () => {
-//         const cellNum = div.getAttribute('data-index');
 
-//         game.insertSymbol(symbolToInsert, cellNum);
-//         game.checkWinner();
-//     })
-// })
+
+// reset the game 
+function resetGame(){
+    const containerDiv = document.querySelectorAll('.container-div');
+    containerDiv.forEach(div => {
+        const img = div.querySelector('img');
+        if(img){
+            div.removeChild(img);
+        }
+    })
+}
+
+
+
+
